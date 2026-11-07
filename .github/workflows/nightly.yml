@@ -46,6 +46,9 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ github.token }}
+      # Files copied through Windows lose their executable flag.
+      - name: Make the scripts executable
+        run: chmod +x scripts/* .githooks/* testing/*.py testing/make-gif-fixtures testing/envs/make-example-media
       - run: scripts/set-version "${{ needs.version.outputs.version }}"
       # A fresh runner installs Rust and fetches the crates for longer than
       # scripts/package-linux.py gives cargo metadata.
@@ -89,6 +92,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: true
+      # Files copied through Windows lose their executable flag.
+      - name: Make the scripts executable
+        run: chmod +x scripts/* .githooks/* testing/*.py testing/make-gif-fixtures testing/envs/make-example-media
       - run: scripts/set-version "${{ needs.version.outputs.version }}"
       # Wine doesn't start on the runner (kernel32.dll, c0000135), so Inno
       # Setup can't make the installer there.
